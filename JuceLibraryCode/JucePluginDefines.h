@@ -38,10 +38,10 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "ClaraFM"
+ #define JucePlugin_Name                   "Gr8_AdditiveSynth"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "ClaraFM"
+ #define JucePlugin_Desc                   "Gr8_AdditiveSynth"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "yourcompany"
@@ -98,16 +98,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         ClaraFMAU
+ #define JucePlugin_AUExportPrefix         Gr8_AdditiveSynthAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "ClaraFMAU"
+ #define JucePlugin_AUExportPrefixQuoted   "Gr8_AdditiveSynthAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.ClaraFM
+ #define JucePlugin_CFBundleIdentifier     com.yourcompany.Gr8_AdditiveSynth
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           2048
@@ -125,7 +125,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.ClaraFM
+ #define JucePlugin_AAXIdentifier          com.yourcompany.Gr8_AdditiveSynth
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -149,7 +149,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: ClaraFM"
+ #define JucePlugin_IAAName                "yourcompany: Gr8_AdditiveSynth"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16

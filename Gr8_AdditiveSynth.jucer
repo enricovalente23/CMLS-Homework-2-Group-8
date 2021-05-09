@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="IfAU2R" name="ClaraFM" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+<JUCERPROJECT id="IfAU2R" name="Gr8_AdditiveSynth" projectType="audioplug"
+              useAppConfig="0" addUsingNamespaceToJuceHeader="0" displaySplashScreen="1"
+              jucerFormatVersion="1" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Stereo,Synth">
-  <MAINGROUP id="T1yjeA" name="ClaraFM">
+  <MAINGROUP id="T1yjeA" name="Gr8_AdditiveSynth">
     <GROUP id="{1B338835-D299-33FD-D58D-EE6659E59A95}" name="Source">
       <FILE id="OWM0xX" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
