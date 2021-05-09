@@ -185,11 +185,15 @@ int AddSynthAudioProcessor::getVoiceIndex(float freq) {
 float AddSynthAudioProcessor::computeVoiceValue(int index) {
     float output = 0.0;
     for (int i = 0; i < TOT_HARMONICS; i++) {
-        output+= amp * (float)sin((double)phase);
-
+        output+= amp * (float)sin(((double)phase*oscFreqRatio[i]));
+        //WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW
     }
     phase += (float)(M_PI * 2. * (((double)car_freq[index] / (double)SAMPLE_RATE)));
-    if (phase >= M_PI * 2.) phase -= M_PI * 2.;
+
+    if (phase >= M_PI * 2.) {
+        phase -= M_PI * 2.;
+    }
+    return output;
 }
 
 void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
