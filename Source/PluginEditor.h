@@ -17,7 +17,7 @@
 class FMSynthAudioProcessorEditor  : public juce::AudioProcessorEditor, private juce::Slider::Listener
 {
 public:
-    FMSynthAudioProcessorEditor (FMSynthAudioProcessor&);
+    FMSynthAudioProcessorEditor (AddSynthAudioProcessor&);
     ~FMSynthAudioProcessorEditor() override;
 
     //==============================================================================
@@ -27,7 +27,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    FMSynthAudioProcessor& audioProcessor;
+    AddSynthAudioProcessor& audioProcessor;
     
     juce::Slider modFreq;
     juce::Label modFreqLabel;

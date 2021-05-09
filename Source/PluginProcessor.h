@@ -26,12 +26,12 @@
 //==============================================================================
 /**
 */
-class FMSynthAudioProcessor  : public juce::AudioProcessor
+class AddSynthAudioProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    FMSynthAudioProcessor();
-    ~FMSynthAudioProcessor() override;
+    AddSynthAudioProcessor();
+    ~AddSynthAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -72,6 +72,9 @@ public:
     void setOscFreqRatio(int index, float val);
     void setModFreq(float val);
     void setModIndex(float val);
+    void updateFirstFreeVoice(int index);
+    void updateLastActiveVoice(int index);
+    int getVoiceIndex(float freq);
 
 private:
     //==============================================================================
@@ -84,18 +87,23 @@ private:
     float phase;
     float amp;
     
+    int attack;
+    int decay;
+    int sustain;
+    int release;
+
     float masterGain;
     float oscGains[TOT_GAINS];
     float oscFreqRatio[TOT_FREQ_OFFSET];
 
     bool activeVoices[TOT_VOICES];
     float car_freq[TOT_VOICES];
-    float voiceGains[TOT_VOICES];
-    int currentlyPlaying = 0;
+
+    int numCurrentlyPlaying = 0;
     int firstFreeVoice = 0;
-    int lastActive = -1;
+    int lastActiveVoice = -1;
 
     //********************************************************************************************//
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FMSynthAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddSynthAudioProcessor)
 };

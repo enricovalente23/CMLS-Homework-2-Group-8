@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-FMSynthAudioProcessor::FMSynthAudioProcessor()
+AddSynthAudioProcessor::AddSynthAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
@@ -24,17 +24,17 @@ FMSynthAudioProcessor::FMSynthAudioProcessor()
 {
 }
 
-FMSynthAudioProcessor::~FMSynthAudioProcessor()
+AddSynthAudioProcessor::~AddSynthAudioProcessor()
 {
 }
 
 //==============================================================================
-const juce::String FMSynthAudioProcessor::getName() const
+const juce::String AddSynthAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool FMSynthAudioProcessor::acceptsMidi() const
+bool AddSynthAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -43,7 +43,7 @@ bool FMSynthAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool FMSynthAudioProcessor::producesMidi() const
+bool AddSynthAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -52,7 +52,7 @@ bool FMSynthAudioProcessor::producesMidi() const
    #endif
 }
 
-bool FMSynthAudioProcessor::isMidiEffect() const
+bool AddSynthAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -61,37 +61,37 @@ bool FMSynthAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double FMSynthAudioProcessor::getTailLengthSeconds() const
+double AddSynthAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int FMSynthAudioProcessor::getNumPrograms()
+int AddSynthAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int FMSynthAudioProcessor::getCurrentProgram()
+int AddSynthAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void FMSynthAudioProcessor::setCurrentProgram (int index)
+void AddSynthAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const juce::String FMSynthAudioProcessor::getProgramName (int index)
+const juce::String AddSynthAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void FMSynthAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void AddSynthAudioProcessor::changeProgramName (int index, const juce::String& newName)
 {
 }
 
 //==============================================================================
-void FMSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void AddSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -103,6 +103,8 @@ void FMSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     for (int i = 0; i < TOT_VOICES; i++)
     {
         car_freq[i] = 0.0;
+        activeVoices[i] = false;
+        voiceGains[i] = 0.0;
     }
     
     mod_freq = 0.0;
@@ -112,14 +114,14 @@ void FMSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 
 }
 
-void FMSynthAudioProcessor::releaseResources()
+void AddSynthAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool FMSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool AddSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -144,7 +146,33 @@ bool FMSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) 
 }
 #endif
 
-void FMSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void AddSynthAudioProcessor::updateFirstFreeVoice(int index) {
+    if (numCurrentlyPlaying < TOT_VOICES) {
+        while (index < TOT_VOICES && activeVoices[index]) {
+            index++;
+        }
+    }
+}
+
+void AddSynthAudioProcessor::updateLastActiveVoice(int index) {
+    if (numCurrentlyPlaying > 0) {
+        while (index >= 0 && !activeVoices[index]) {
+            index--;
+        }
+    }
+}
+
+int AddSynthAudioProcessor::getVoiceIndex(float freq) {
+    for (int i = 0; i < TOT_VOICES; i++) {
+        if (car_freq[i] == freq) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
@@ -177,17 +205,41 @@ void FMSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     float mod;
     juce::MidiMessage m;
     int time;
+    int index;
     
-    for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);)
-    {
-        if (m.isNoteOn())
-        {
-            amp = 0.1;
-            car_freq[firstFreeVoice] = m.getMidiNoteInHertz(m.getNoteNumber());
+    for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
+
+        if (m.isNoteOn()) {
+
+            if (numCurrentlyPlaying < TOT_VOICES) {
+                amp = 0.1;
+                car_freq[firstFreeVoice] = m.getMidiNoteInHertz(m.getNoteNumber());
+
+                if (firstFreeVoice > lastActiveVoice) {
+                    lastActiveVoice = firstFreeVoice;
+                }
+
+                oscGains[firstFreeVoice] = 0.1;
+                activeVoices[firstFreeVoice] = true;
+                numCurrentlyPlaying++;
+                updateFirstFreeVoice(firstFreeVoice);
+            }
+            
         }
         else if (m.isNoteOff())
         {
             amp = 0;
+            index = getVoiceIndex(m.getMidiNoteInHertz(m.getNoteNumber()));
+            activeVoices[index] = false;
+            oscGains[index] = 0;
+            numCurrentlyPlaying--;
+
+            if (index < firstFreeVoice) {
+                firstFreeVoice = index;
+            }
+            if (index == lastActiveVoice) {
+                updateLastActiveVoice(lastActiveVoice);
+            }
         }
         else if (m.isAftertouch())
         {
@@ -221,39 +273,39 @@ void FMSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
 }
 
-void FMSynthAudioProcessor::setModFreq(float val) {
+void AddSynthAudioProcessor::setModFreq(float val) {
     mod_freq = val;
 }
 
-void FMSynthAudioProcessor::setModIndex(float val) {
+void AddSynthAudioProcessor::setModIndex(float val) {
     mod_index = val;
 }
 
-void FMSynthAudioProcessor::setMasterGain(float val) {
+void AddSynthAudioProcessor::setMasterGain(float val) {
     masterGain = val;
 }
 
 
 //==============================================================================
-bool FMSynthAudioProcessor::hasEditor() const
+bool AddSynthAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-juce::AudioProcessorEditor* FMSynthAudioProcessor::createEditor()
+juce::AudioProcessorEditor* AddSynthAudioProcessor::createEditor()
 {
     return new FMSynthAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void FMSynthAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void AddSynthAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
-void FMSynthAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void AddSynthAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -263,5 +315,5 @@ void FMSynthAudioProcessor::setStateInformation (const void* data, int sizeInByt
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new FMSynthAudioProcessor();
+    return new AddSynthAudioProcessor();
 }
