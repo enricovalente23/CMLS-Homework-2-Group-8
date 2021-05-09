@@ -12,14 +12,15 @@
 //********************************************************************************************//
 // 1) define some global parameters
 
-#define SAMPLE_RATE   (44100)
+#define SAMPLE_RATE   44100
 
 #ifndef M_PI
-#define M_PI  (3.14159265)
-#define TOT_GAINS (4)
-#define TOT_FREQ_OFFSET (3)
-#define TOT_VOICES (16)
+#define M_PI  3.14159265
 #endif
+#define TOT_GAINS 4
+#define TOT_FREQ_OFFSET 3
+#define TOT_VOICES 16
+
 
 //********************************************************************************************//
 //==============================================================================
