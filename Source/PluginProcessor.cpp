@@ -100,11 +100,14 @@ void AddSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     amp = 1.0; 
     phase = 2.0;
 
-    for (int i = 0; i < TOT_VOICES; i++)
-    {
+    for (int i = 0; i < TOT_VOICES; i++) {
         car_freq[i] = 0.0;
         activeVoices[i] = false;
-        voiceGains[i] = 0.0;
+    }
+
+    for (int i = 0; i < TOT_HARMONICS; i++) {
+        oscFreqRatio[i] = 1.0;
+        oscGains[i] = 0.0;
     }
     
     mod_freq = 0.0;
@@ -146,6 +149,7 @@ bool AddSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 }
 #endif
 
+//Returns the lowest index to a free voice
 void AddSynthAudioProcessor::updateFirstFreeVoice(int index) {
     if (numCurrentlyPlaying < TOT_VOICES) {
         while (index < TOT_VOICES && activeVoices[index]) {
@@ -154,14 +158,20 @@ void AddSynthAudioProcessor::updateFirstFreeVoice(int index) {
     }
 }
 
+//Returns the highest index to an active voice
 void AddSynthAudioProcessor::updateLastActiveVoice(int index) {
     if (numCurrentlyPlaying > 0) {
         while (index >= 0 && !activeVoices[index]) {
             index--;
         }
+        lastActiveVoice = index;
+    }
+    else {
+        lastActiveVoice = -1;
     }
 }
 
+//Returns the index to the voice playing the input frequency (-1 if none)
 int AddSynthAudioProcessor::getVoiceIndex(float freq) {
     for (int i = 0; i < TOT_VOICES; i++) {
         if (car_freq[i] == freq) {
@@ -170,6 +180,16 @@ int AddSynthAudioProcessor::getVoiceIndex(float freq) {
     }
 
     return -1;
+}
+
+float AddSynthAudioProcessor::computeVoiceValue(int index) {
+    float output = 0.0;
+    for (int i = 0; i < TOT_HARMONICS; i++) {
+        output+= amp * (float)sin((double)phase);
+
+    }
+    phase += (float)(M_PI * 2. * (((double)car_freq[index] / (double)SAMPLE_RATE)));
+    if (phase >= M_PI * 2.) phase -= M_PI * 2.;
 }
 
 void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -262,7 +282,9 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         output = 0.0;
 
         for (int j = 0; j < TOT_VOICES; j++) {
-
+            if (activeVoices[i]) {
+                output += computeVoiceValue(i);
+            }
         }
         
         channelDataL[i] = amp * (float) sin ((double) phase + mod);

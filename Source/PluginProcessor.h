@@ -17,8 +17,7 @@
 #ifndef M_PI
 #define M_PI  3.14159265
 #endif
-#define TOT_GAINS 4
-#define TOT_FREQ_OFFSET 3
+#define TOT_HARMONICS 4
 #define TOT_VOICES 16
 
 
@@ -75,6 +74,7 @@ public:
     void updateFirstFreeVoice(int index);
     void updateLastActiveVoice(int index);
     int getVoiceIndex(float freq);
+    float computeVoiceValue(int index);
 
 private:
     //==============================================================================
@@ -93,11 +93,12 @@ private:
     int release;
 
     float masterGain;
-    float oscGains[TOT_GAINS];
-    float oscFreqRatio[TOT_FREQ_OFFSET];
+    float oscGains[TOT_HARMONICS];
+    float oscFreqRatio[TOT_HARMONICS];
 
     bool activeVoices[TOT_VOICES];
     float car_freq[TOT_VOICES];
+    float phases[TOT_VOICES];
 
     int numCurrentlyPlaying = 0;
     int firstFreeVoice = 0;
