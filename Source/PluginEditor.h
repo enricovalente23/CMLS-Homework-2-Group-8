@@ -14,11 +14,11 @@
 //==============================================================================
 /**
 */
-class FMSynthAudioProcessorEditor  : public juce::AudioProcessorEditor, private juce::Slider::Listener
+class AddSynthAudioProcessorEditor  : public juce::AudioProcessorEditor, private juce::Slider::Listener
 {
 public:
-    FMSynthAudioProcessorEditor (AddSynthAudioProcessor&);
-    ~FMSynthAudioProcessorEditor() override;
+    AddSynthAudioProcessorEditor (AddSynthAudioProcessor&);
+    ~AddSynthAudioProcessorEditor() override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -40,5 +40,5 @@ private:
     
     void sliderValueChanged( juce::Slider * slider) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FMSynthAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AddSynthAudioProcessorEditor)
 };

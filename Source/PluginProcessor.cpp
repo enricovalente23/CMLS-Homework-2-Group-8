@@ -253,11 +253,17 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     float* channelDataL = buffer.getWritePointer(0);
     float* channelDataR = buffer.getWritePointer(1);
     int numSamples = buffer.getNumSamples();
-    
+    float output;
     
     for (int i = 0; i < numSamples; ++i)
     {   
         mod =  mod_index * (float) sin((double) mod_phase);
+
+        output = 0.0;
+
+        for (int j = 0; j < TOT_VOICES; j++) {
+
+        }
         
         channelDataL[i] = amp * (float) sin ((double) phase + mod);
         channelDataR[i] = amp * (float) sin ((double) phase + mod);
@@ -294,7 +300,7 @@ bool AddSynthAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* AddSynthAudioProcessor::createEditor()
 {
-    return new FMSynthAudioProcessorEditor (*this);
+    return new AddSynthAudioProcessorEditor (*this);
 }
 
 //==============================================================================

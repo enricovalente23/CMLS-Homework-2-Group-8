@@ -10,7 +10,7 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-FMSynthAudioProcessorEditor::FMSynthAudioProcessorEditor (AddSynthAudioProcessor& p)
+AddSynthAudioProcessorEditor::AddSynthAudioProcessorEditor (AddSynthAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     // Make sure that before the constructor has finished, you've set the
@@ -46,12 +46,12 @@ FMSynthAudioProcessorEditor::FMSynthAudioProcessorEditor (AddSynthAudioProcessor
     
 }
 
-FMSynthAudioProcessorEditor::~FMSynthAudioProcessorEditor()
+AddSynthAudioProcessorEditor::~AddSynthAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void FMSynthAudioProcessorEditor::paint (juce::Graphics& g)
+void AddSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
@@ -61,7 +61,7 @@ void FMSynthAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
-void FMSynthAudioProcessorEditor::resized()
+void AddSynthAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
@@ -75,7 +75,7 @@ void FMSynthAudioProcessorEditor::resized()
 }
 
 
-void FMSynthAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
+void AddSynthAudioProcessorEditor::sliderValueChanged(juce::Slider *slider)
 {
    if (slider == &modFreq) {
         audioProcessor.setModFreq(modFreq.getValue());
