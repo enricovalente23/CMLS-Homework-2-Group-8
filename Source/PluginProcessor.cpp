@@ -223,7 +223,9 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
                 if (firstFreeVoice > lastActiveVoice) {
                     lastActiveVoice = firstFreeVoice;
                 }
+
                 voice.activate();
+                voice.setPhase(INITIAL_PHASE);
                 numCurrentlyPlaying++;
                 updateFirstFreeVoice(firstFreeVoice);
             }
@@ -233,8 +235,8 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         {
             index = getVoiceIndex(m.getMidiNoteInHertz(m.getNoteNumber()));
             voice = voices[index];
+            voice.setState(ADSRState::RELEASE);
             voice.deactivate();
-            oscGains[index] = 0;
             numCurrentlyPlaying--;
 
             if (index < firstFreeVoice) {
