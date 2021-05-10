@@ -187,7 +187,7 @@ float AddSynthAudioProcessor::computeVoiceValue(int index) {
         output+= amp * (float)sin(((double)phase*oscFreqRatio[i]));
         //WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW
     }
-    phase += (float)(M_PI * 2. * (((double)car_freq[index] / (double)SAMPLE_RATE)));
+    phase += (float)(M_PI * 2. * (((double)voices[index].getFreq() / (double)SAMPLE_RATE)));
 
     if (phase >= M_PI * 2.) {
         phase -= M_PI * 2.;
@@ -288,7 +288,7 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         output = 0.0;
 
         for (int j = 0; j < TOT_VOICES; j++) {
-            if (activeVoices[i]) {
+            if (voices[i].isActive()) {
                 output += computeVoiceValue(i);
             }
         }
@@ -296,7 +296,7 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         channelDataL[i] = amp * (float) sin ((double) phase + mod);
         channelDataR[i] = amp * (float) sin ((double) phase + mod);
         
-        phase +=  (float) ( M_PI * 2. *( ((double) car_freq[firstFreeVoice]  / (double) SAMPLE_RATE)));
+        phase +=  (float) ( M_PI * 2. *( ((double) voices[firstFreeVoice].getFreq()  / (double) SAMPLE_RATE)));
         if( phase >= M_PI * 2. ) phase -= M_PI * 2.;
         
         mod_phase += (float) ( M_PI * 2. * ((double) mod_freq / (double) SAMPLE_RATE) );

@@ -42,6 +42,7 @@ public:
     void setPhase(float value);
 
 private:
+
     bool active;
     ADSRState state;
     float phase;
