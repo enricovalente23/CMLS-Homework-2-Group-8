@@ -9,14 +9,12 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "SynthVoice.h"
+
 //********************************************************************************************//
 // 1) define some global parameters
 
-#define SAMPLE_RATE   44100
-
-#ifndef M_PI
-#define M_PI  3.14159265
-#endif
+#define SAMPLE_RATE 44100
 #define TOT_HARMONICS 4
 #define TOT_VOICES 16
 
@@ -95,10 +93,7 @@ private:
     float masterGain;
     float oscGains[TOT_HARMONICS];
     float oscFreqRatio[TOT_HARMONICS];
-
-    bool activeVoices[TOT_VOICES];
-    float car_freq[TOT_VOICES];
-    float phases[TOT_VOICES];
+    SynthVoice voices[TOT_VOICES];
 
     int numCurrentlyPlaying = 0;
     int firstFreeVoice = 0;

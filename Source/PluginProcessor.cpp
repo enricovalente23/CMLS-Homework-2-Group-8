@@ -101,8 +101,7 @@ void AddSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     phase = 2.0;
 
     for (int i = 0; i < TOT_VOICES; i++) {
-        car_freq[i] = 0.0;
-        activeVoices[i] = false;
+        voices[i] = SynthVoice();
     }
 
     for (int i = 0; i < TOT_HARMONICS; i++) {
@@ -152,7 +151,7 @@ bool AddSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts)
 //Returns the lowest index to a free voice
 void AddSynthAudioProcessor::updateFirstFreeVoice(int index) {
     if (numCurrentlyPlaying < TOT_VOICES) {
-        while (index < TOT_VOICES && activeVoices[index]) {
+        while (index < TOT_VOICES && voices[index].isActive()) {
             index++;
         }
     }
@@ -161,7 +160,7 @@ void AddSynthAudioProcessor::updateFirstFreeVoice(int index) {
 //Returns the highest index to an active voice
 void AddSynthAudioProcessor::updateLastActiveVoice(int index) {
     if (numCurrentlyPlaying > 0) {
-        while (index >= 0 && !activeVoices[index]) {
+        while (index >= 0 && !voices[index].isActive()) {
             index--;
         }
         lastActiveVoice = index;
@@ -174,7 +173,7 @@ void AddSynthAudioProcessor::updateLastActiveVoice(int index) {
 //Returns the index to the voice playing the input frequency (-1 if none)
 int AddSynthAudioProcessor::getVoiceIndex(float freq) {
     for (int i = 0; i < TOT_VOICES; i++) {
-        if (car_freq[i] == freq) {
+        if (voices[i].getFreq() == freq) {
             return i;
         }
     }
@@ -225,11 +224,12 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     }
     
     //********************************************************************************************//
-    // 4) implement the actual FM synthesis: first retrieve the note value from the NoteOn messages
+    // 4) implement the actual synthesis: first retrieve the note value from the NoteOn messages
     float mod;
     juce::MidiMessage m;
     int time;
     int index;
+    SynthVoice voice;
     
     for (juce::MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);) {
 
@@ -237,14 +237,15 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
 
             if (numCurrentlyPlaying < TOT_VOICES) {
                 amp = 0.1;
-                car_freq[firstFreeVoice] = m.getMidiNoteInHertz(m.getNoteNumber());
+                voice = voices[firstFreeVoice];
+                voice.setFreq(m.getMidiNoteInHertz(m.getNoteNumber()));
 
                 if (firstFreeVoice > lastActiveVoice) {
                     lastActiveVoice = firstFreeVoice;
                 }
 
                 oscGains[firstFreeVoice] = 0.1;
-                activeVoices[firstFreeVoice] = true;
+                voice.activate();
                 numCurrentlyPlaying++;
                 updateFirstFreeVoice(firstFreeVoice);
             }
@@ -254,7 +255,8 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         {
             amp = 0;
             index = getVoiceIndex(m.getMidiNoteInHertz(m.getNoteNumber()));
-            activeVoices[index] = false;
+            voice = voices[index];
+            voice.deactivate();
             oscGains[index] = 0;
             numCurrentlyPlaying--;
 
