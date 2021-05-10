@@ -8,10 +8,13 @@
   ==============================================================================
 */
 
+#include <JuceHeader.h>
+
 #define SAMPLE_RATE   44100
 #define INITIAL_FREQ 0.0
 #define INITIAL_PHASE 0.0
 #define INITIAL_TIME 0.0
+#define TOT_HARMONICS 4
 
 #ifndef M_PI
 #define M_PI  3.14159265
@@ -40,6 +43,12 @@ public:
     void activate();
     void deactivate();
     void setPhase(float value);
+    void setState(ADSRState newState);
+
+    float computeCurrentOutputValue(float* oscGains, float *oscFreqRatio);
+    float adjustPhase(float value);
+    void updatePhase();
+    float computeHarmonicOutput(float gain, float freqRatio);
 
 private:
 

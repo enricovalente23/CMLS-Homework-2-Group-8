@@ -97,8 +97,6 @@ void AddSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
     // initialisation that you need..
      //********************************************************************************************//
     //3) Initialize the field of the structure FMData data
-    amp = 1.0; 
-    phase = 2.0;
 
     for (int i = 0; i < TOT_VOICES; i++) {
         voices[i] = SynthVoice();
@@ -108,10 +106,8 @@ void AddSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
         oscFreqRatio[i] = 1.0;
         oscGains[i] = 0.0;
     }
-    
-    mod_freq = 0.0;
-    mod_phase = 1.0;
-    mod_index = 0.0;
+
+    oscGains[0] = 1.0;
     //********************************************************************************************//
 
 }
@@ -181,20 +177,6 @@ int AddSynthAudioProcessor::getVoiceIndex(float freq) {
     return -1;
 }
 
-float AddSynthAudioProcessor::computeVoiceValue(int index) {
-    float output = 0.0;
-    for (int i = 0; i < TOT_HARMONICS; i++) {
-        output+= amp * (float)sin(((double)phase*oscFreqRatio[i]));
-        //WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW
-    }
-    phase += (float)(M_PI * 2. * (((double)voices[index].getFreq() / (double)SAMPLE_RATE)));
-
-    if (phase >= M_PI * 2.) {
-        phase -= M_PI * 2.;
-    }
-    return output;
-}
-
 void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -225,7 +207,6 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     
     //********************************************************************************************//
     // 4) implement the actual synthesis: first retrieve the note value from the NoteOn messages
-    float mod;
     juce::MidiMessage m;
     int time;
     int index;
@@ -236,15 +217,12 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         if (m.isNoteOn()) {
 
             if (numCurrentlyPlaying < TOT_VOICES) {
-                amp = 0.1;
                 voice = voices[firstFreeVoice];
                 voice.setFreq(m.getMidiNoteInHertz(m.getNoteNumber()));
 
                 if (firstFreeVoice > lastActiveVoice) {
                     lastActiveVoice = firstFreeVoice;
                 }
-
-                oscGains[firstFreeVoice] = 0.1;
                 voice.activate();
                 numCurrentlyPlaying++;
                 updateFirstFreeVoice(firstFreeVoice);
@@ -253,7 +231,6 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
         }
         else if (m.isNoteOff())
         {
-            amp = 0;
             index = getVoiceIndex(m.getMidiNoteInHertz(m.getNoteNumber()));
             voice = voices[index];
             voice.deactivate();
@@ -283,36 +260,27 @@ void AddSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juc
     
     for (int i = 0; i < numSamples; ++i)
     {   
-        mod =  mod_index * (float) sin((double) mod_phase);
-
         output = 0.0;
 
         for (int j = 0; j < TOT_VOICES; j++) {
-            if (voices[i].isActive()) {
-                output += computeVoiceValue(i);
+            voice = voices[j];
+            if (voice.isActive()) {
+                output += voice.computeCurrentOutputValue(oscGains, oscFreqRatio);
             }
         }
         
+        output = output * masterGain;
+        /*
         channelDataL[i] = amp * (float) sin ((double) phase + mod);
         channelDataR[i] = amp * (float) sin ((double) phase + mod);
-        
-        phase +=  (float) ( M_PI * 2. *( ((double) voices[firstFreeVoice].getFreq()  / (double) SAMPLE_RATE)));
-        if( phase >= M_PI * 2. ) phase -= M_PI * 2.;
-        
-        mod_phase += (float) ( M_PI * 2. * ((double) mod_freq / (double) SAMPLE_RATE) );
-        if( mod_phase >= M_PI * 2. ) mod_phase -= M_PI * 2.;    
+        */
+
+        channelDataL[i] = output;
+        channelDataR[i] = output;
         
     }
     //********************************************************************************************//
 
-}
-
-void AddSynthAudioProcessor::setModFreq(float val) {
-    mod_freq = val;
-}
-
-void AddSynthAudioProcessor::setModIndex(float val) {
-    mod_index = val;
 }
 
 void AddSynthAudioProcessor::setMasterGain(float val) {

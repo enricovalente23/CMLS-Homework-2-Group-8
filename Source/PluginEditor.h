@@ -27,13 +27,7 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    AddSynthAudioProcessor& audioProcessor;
-    
-    juce::Slider modFreq;
-    juce::Label modFreqLabel;
-    
-    juce::Slider modIndex;
-    juce::Label modIndexLabel;
+    AddSynthAudioProcessor& audioProcessor; 
 
     juce::Slider masterGain;
     juce::Label masterGainLabel;

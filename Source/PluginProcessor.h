@@ -14,8 +14,6 @@
 //********************************************************************************************//
 // 1) define some global parameters
 
-#define SAMPLE_RATE 44100
-#define TOT_HARMONICS 4
 #define TOT_VOICES 16
 
 
@@ -67,23 +65,14 @@ public:
     void setMasterGain(float val);
     void setOscGain(int index, float val);
     void setOscFreqRatio(int index, float val);
-    void setModFreq(float val);
-    void setModIndex(float val);
     void updateFirstFreeVoice(int index);
     void updateLastActiveVoice(int index);
     int getVoiceIndex(float freq);
-    float computeVoiceValue(int index);
 
 private:
     //==============================================================================
     //********************************************************************************************//
     // 2) add to the Processor class the variables we need for the FM synth
-    float mod_phase;
-    float mod_freq;
-    int mod_index;
-    
-    float phase;
-    float amp;
     
     int attack;
     int decay;
