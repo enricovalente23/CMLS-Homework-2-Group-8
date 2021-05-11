@@ -97,5 +97,5 @@ void SynthVoice::updatePhase() {
 }
 
 float SynthVoice::computeHarmonicOutput(float gain, float freqRatio, float* waveShape) {
-    return gain * waveShape[adjustPhase((int) (phase * freqRatio))];
+    return gain * waveShape[adjustPhase((int) (phase * freq * freqRatio))];
 }

@@ -41,6 +41,15 @@ private:
     juce::Slider gainThree;
     juce::Label gainLabelThree;
 
+    juce::Slider freqOne;
+    juce::Label freqLabelOne;
+
+    juce::Slider freqTwo;
+    juce::Label freqLabelTwo;
+
+    juce::Slider freqThree;
+    juce::Label freqLabelThree;
+
     void sliderValueChanged(juce::Slider* slider) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Gr8_AdditiveSynthAudioProcessorEditor)

@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+using namespace std;
 
 //==============================================================================
 Gr8_AdditiveSynthAudioProcessor::Gr8_AdditiveSynthAudioProcessor()
@@ -102,20 +103,22 @@ void Gr8_AdditiveSynthAudioProcessor::prepareToPlay (double sampleRate, int samp
         voices[i] = SynthVoice();
     }
 
-    for (int i = 0; i < TOT_HARMONICS; i++) {
-        oscFreqRatio[i] = 1.0;
-        oscGains[i] = 0.0;
+    for (int i = 0; i < TOT_HARMONICS; i++)
+    {
+        oscGains[i] = 0.5;
+        oscFreqRatio[i] = (float)i + 1;
     }
 
-    oscGains[0] = 1.0;
-    masterGain = 0.5;
+    masterGain = 1.0;
 
     initWaveShape();
 
-    SynthVoice voice = voices[firstFreeVoice];
+    SynthVoice voice = voices[0];
     voice.setFreq(440.0);
     voice.setPhase(INITIAL_PHASE);
     voice.activate();
+
+    cout << "All set\n";
     //********************************************************************************************//
 }
 
@@ -284,12 +287,8 @@ void Gr8_AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
                 output += voice.computeCurrentOutputValue(oscGains, oscFreqRatio, waveShape);
             }
         }
-        
-        output = output * masterGain;
-        /*
-        channelDataL[i] = amp * (float) sin ((double) phase + mod);
-        channelDataR[i] = amp * (float) sin ((double) phase + mod);
-        */
+
+        output = voices[0].computeHarmonicOutput(oscGains[0], oscFreqRatio[0], waveShape) * masterGain;
 
         channelDataL[i] = output;
         channelDataR[i] = output;
