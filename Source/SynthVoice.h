@@ -2,12 +2,13 @@
   ==============================================================================
 
     SynthVoice.h
-    Created: 10 May 2021 7:59:15pm
+    Created: 11 May 2021 6:54:41pm
     Author:  jiten
 
   ==============================================================================
 */
 
+#pragma once
 #include <JuceHeader.h>
 
 #define SAMPLE_RATE   44100
@@ -45,7 +46,7 @@ public:
     void setPhase(float value);
     void setState(ADSRState newState);
 
-    float computeCurrentOutputValue(float* oscGains, float *oscFreqRatio);
+    float computeCurrentOutputValue(float* oscGains, float* oscFreqRatio);
     float adjustPhase(float value);
     void updatePhase();
     float computeHarmonicOutput(float gain, float freqRatio);

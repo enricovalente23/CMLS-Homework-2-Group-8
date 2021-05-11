@@ -2,7 +2,7 @@
   ==============================================================================
 
     SynthVoice.cpp
-    Created: 10 May 2021 7:59:27pm
+    Created: 11 May 2021 6:54:41pm
     Author:  jiten
 
   ==============================================================================
@@ -59,6 +59,10 @@ void SynthVoice::deactivate() {
     active = false;
 }
 
+void SynthVoice::setPhase(float value) {
+
+}
+
 void SynthVoice::setState(ADSRState newState) {
     state = newState;
 }
@@ -73,7 +77,7 @@ float SynthVoice::computeCurrentOutputValue(float* oscGains, float* oscFreqRatio
     for (int i = 0; i < TOT_HARMONICS; i++) {
         output += computeHarmonicOutput(oscGains[i], oscFreqRatio[i]);
     }
-    
+
     updatePhase();
 
     return output;
@@ -81,11 +85,11 @@ float SynthVoice::computeCurrentOutputValue(float* oscGains, float* oscFreqRatio
 
 float SynthVoice::adjustPhase(float value) {
 
-    if (value < M_PI*2) {
+    if (value < M_PI * 2) {
         return value;
     }
 
-    return value - ((int)(value / M_PI / 2)) * (M_PI*2);
+    return value - ((int)(value / M_PI / 2)) * (M_PI * 2);
 }
 
 void SynthVoice::updatePhase() {
