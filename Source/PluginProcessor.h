@@ -67,11 +67,14 @@ public:
     void updateFirstFreeVoice(int index);
     void updateLastActiveVoice(int index);
     int getVoiceIndex(float freq);
+    void initWaveShape();
 
 private:
     //==============================================================================
     //********************************************************************************************//
     // 2) add to the Processor class the variables we need for the FM synth
+
+    float waveShape[SAMPLE_RATE];
 
     int attack;
     int decay;

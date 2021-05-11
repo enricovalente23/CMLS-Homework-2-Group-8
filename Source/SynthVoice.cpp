@@ -59,8 +59,8 @@ void SynthVoice::deactivate() {
     active = false;
 }
 
-void SynthVoice::setPhase(float value) {
-
+void SynthVoice::setPhase(int value) {
+    phase = value;
 }
 
 void SynthVoice::setState(ADSRState newState) {
@@ -71,11 +71,11 @@ void SynthVoice::setState(ADSRState newState) {
     FUNCTIONS
 */
 
-float SynthVoice::computeCurrentOutputValue(float* oscGains, float* oscFreqRatio) {
+float SynthVoice::computeCurrentOutputValue(float* oscGains, float* oscFreqRatio, float* waveShape) {
     float output = 0.0;
 
     for (int i = 0; i < TOT_HARMONICS; i++) {
-        output += computeHarmonicOutput(oscGains[i], oscFreqRatio[i]);
+        output += computeHarmonicOutput(oscGains[i], oscFreqRatio[i], waveShape);
     }
 
     updatePhase();
@@ -83,23 +83,19 @@ float SynthVoice::computeCurrentOutputValue(float* oscGains, float* oscFreqRatio
     return output;
 }
 
-float SynthVoice::adjustPhase(float value) {
-
-    if (value < M_PI * 2) {
-        return value;
-    }
-
-    return value - ((int)(value / M_PI / 2)) * (M_PI * 2);
+int SynthVoice::adjustPhase(int value) {
+    return value%SAMPLE_RATE;
 }
 
 void SynthVoice::updatePhase() {
-    phase += (float)(M_PI * 2. * (((double)freq / (double)SAMPLE_RATE)));
-
-    if (phase >= M_PI * 2.) {
-        phase -= M_PI * 2.;
+    if (phase + 1 == SAMPLE_RATE) {
+        phase = INITIAL_PHASE;
+    }
+    else {
+        phase++;
     }
 }
 
-float SynthVoice::computeHarmonicOutput(float gain, float freqRatio) {
-    return gain * (float)sin(((double)adjustPhase(phase * freqRatio)));
+float SynthVoice::computeHarmonicOutput(float gain, float freqRatio, float* waveShape) {
+    return gain * waveShape[adjustPhase((int) (phase * freqRatio))];
 }

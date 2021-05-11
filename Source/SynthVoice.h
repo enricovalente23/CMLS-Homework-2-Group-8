@@ -13,7 +13,7 @@
 
 #define SAMPLE_RATE   44100
 #define INITIAL_FREQ 0.0
-#define INITIAL_PHASE 0.0
+#define INITIAL_PHASE 0
 #define INITIAL_TIME 0.0
 #define TOT_HARMONICS 4
 
@@ -43,19 +43,19 @@ public:
     void setFreq(float value);
     void activate();
     void deactivate();
-    void setPhase(float value);
+    void setPhase(int value);
     void setState(ADSRState newState);
 
-    float computeCurrentOutputValue(float* oscGains, float* oscFreqRatio);
-    float adjustPhase(float value);
+    float computeCurrentOutputValue(float* oscGains, float* oscFreqRatio, float* waveShape);
+    int adjustPhase(int value);
     void updatePhase();
-    float computeHarmonicOutput(float gain, float freqRatio);
+    float computeHarmonicOutput(float gain, float freqRatio, float* waveShape);
 
 private:
 
     bool active;
     ADSRState state;
-    float phase;
+    int phase;
     float freq;
     float activeTime;
 };

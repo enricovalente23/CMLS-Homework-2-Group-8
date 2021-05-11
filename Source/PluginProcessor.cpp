@@ -108,6 +108,14 @@ void Gr8_AdditiveSynthAudioProcessor::prepareToPlay (double sampleRate, int samp
     }
 
     oscGains[0] = 1.0;
+    masterGain = 0.5;
+
+    initWaveShape();
+
+    SynthVoice voice = voices[firstFreeVoice];
+    voice.setFreq(440.0);
+    voice.setPhase(INITIAL_PHASE);
+    voice.activate();
     //********************************************************************************************//
 }
 
@@ -176,6 +184,13 @@ int Gr8_AdditiveSynthAudioProcessor::getVoiceIndex(float freq) {
     return -1;
 }
 
+void Gr8_AdditiveSynthAudioProcessor::initWaveShape()
+{
+    for (int i = 0; i < SAMPLE_RATE; i++) {
+        waveShape[i] = (float)sin((double) (2*M_PI * i / SAMPLE_RATE));
+    }
+}
+
 void Gr8_AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
@@ -218,15 +233,15 @@ void Gr8_AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
             if (numCurrentlyPlaying < TOT_VOICES) {
                 voice = voices[firstFreeVoice];
                 voice.setFreq(m.getMidiNoteInHertz(m.getNoteNumber()));
+                voice.setPhase(INITIAL_PHASE);
+                numCurrentlyPlaying++;
 
                 if (firstFreeVoice > lastActiveVoice) {
                     lastActiveVoice = firstFreeVoice;
                 }
 
-                voice.activate();
-                voice.setPhase(INITIAL_PHASE);
-                numCurrentlyPlaying++;
                 updateFirstFreeVoice(firstFreeVoice);
+                voice.activate();
             }
             
         }
@@ -266,7 +281,7 @@ void Gr8_AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
         for (int j = 0; j < TOT_VOICES; j++) {
             voice = voices[j];
             if (voice.isActive()) {
-                output += voice.computeCurrentOutputValue(oscGains, oscFreqRatio);
+                output += voice.computeCurrentOutputValue(oscGains, oscFreqRatio, waveShape);
             }
         }
         

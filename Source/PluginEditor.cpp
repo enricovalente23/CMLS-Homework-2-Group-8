@@ -70,8 +70,10 @@ void Gr8_AdditiveSynthAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    masterGainLabel.setBounds(10, 10, 100, 20);
-    masterGain.setBounds(10, 30, 100, 100);
+    int x;
+    int y;
+    masterGainLabel.setBounds(10, 10, 100, 50);
+    masterGain.setBounds(10, 60, 100, 200);
 
     gainOne.setBounds(110, 10, 30, 30);
     gainLabelOne.setBounds(110, 40, 30, 20);
