@@ -10,125 +10,134 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-Gr8_AdditiveSynthAudioProcessorEditor::Gr8_AdditiveSynthAudioProcessorEditor (Gr8_AdditiveSynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+uSynthAudioProcessorEditor::uSynthAudioProcessorEditor(uSynthAudioProcessor& p)
+    : AudioProcessorEditor(&p), audioProcessor(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize(1000, 600);
+    setSize(600, 400);
 
-    masterGain.setRange(0.0, 1.0, 0.005);
-    masterGain.setSliderStyle(juce::Slider::Rotary);
-    masterGain.setTextBoxStyle(juce::Slider::TextBoxAbove, false, 100, 20);
-    masterGainLabel.setText("Master", juce::dontSendNotification);
-    masterGain.addListener(this);
+    modFreq1.setRange(0.25, 4.0, 0.05);
+    modFreq1.setSliderStyle(juce::Slider::Rotary);
+    modFreq1.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    modFreq1.addListener(this);
 
-    gainOne.setRange(0.0, 1.0, 0.005);
-    gainOne.setSliderStyle(juce::Slider::LinearBarVertical);
-    gainOne.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-    gainLabelOne.setText("Osc2 Gain", juce::dontSendNotification);
-    gainOne.addListener(this);
+    modFreq2.setRange(0.25, 4.0, 0.05);
+    modFreq2.setSliderStyle(juce::Slider::Rotary);
+    modFreq2.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    modFreq2.addListener(this);
 
-    gainTwo.setRange(0.0, 1.0, 0.005);
-    gainTwo.setSliderStyle(juce::Slider::LinearBarVertical);
-    gainTwo.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-    gainLabelTwo.setText("Osc3 Gain", juce::dontSendNotification);
-    gainTwo.addListener(this);
+    modFreq3.setRange(0.25, 4.0, 0.05);
+    modFreq3.setSliderStyle(juce::Slider::Rotary);
+    modFreq3.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    modFreq3.addListener(this);
 
-    gainThree.setRange(0.0, 1.0, 0.005);
-    gainThree.setSliderStyle(juce::Slider::LinearBarVertical);
-    gainThree.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-    gainLabelThree.setText("Osc4 Gain", juce::dontSendNotification);
-    gainThree.addListener(this);
+    modFreq1Label.setText("1st Frequency Component", juce::dontSendNotification);
+    modFreq2Label.setText("2nd Frequency Component", juce::dontSendNotification);
+    modFreq3Label.setText("3rd Frequency Component", juce::dontSendNotification);
 
-    freqOne.setRange(0.0, 1.0, 0.005);
-    freqOne.setSliderStyle(juce::Slider::Rotary);
-    freqOne.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-    freqLabelOne.setText("Osc2 Freq", juce::dontSendNotification);
-    freqOne.addListener(this);
+    ampFreq1.setRange(0.0, 1.0, 0.05);
+    ampFreq1.setSliderStyle(juce::Slider::LinearVertical);
+    ampFreq1.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    ampFreq1.addListener(this);
 
-    freqTwo.setRange(0.0, 1.0, 0.005);
-    freqTwo.setSliderStyle(juce::Slider::Rotary);
-    freqTwo.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-    freqLabelTwo.setText("Osc3 Freq", juce::dontSendNotification);
-    freqTwo.addListener(this);
+    ampFreq2.setRange(0.0, 1.0, 0.05);
+    ampFreq2.setSliderStyle(juce::Slider::LinearVertical);
+    ampFreq2.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    ampFreq2.addListener(this);
 
-    freqThree.setRange(0.0, 1.0, 0.005);
-    freqThree.setSliderStyle(juce::Slider::Rotary);
-    freqThree.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
-    freqLabelThree.setText("Osc4 Freq", juce::dontSendNotification);
-    freqThree.addListener(this);
+    ampFreq3.setRange(0.0, 1.0, 0.05);
+    ampFreq3.setSliderStyle(juce::Slider::LinearVertical);
+    ampFreq3.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    ampFreq3.addListener(this);
 
-    masterGain.setValue(1.0);
-    gainOne.setValue(0.5);
-    gainTwo.setValue(0.5);
-    gainThree.setValue(0.5);
-    freqOne.setValue(0.5);
-    freqTwo.setValue(0.5);
-    freqThree.setValue(0.5);
+    ampFreq1Label.setText("1st Amp component", juce::dontSendNotification);
+    ampFreq2Label.setText("2nd Amp component", juce::dontSendNotification);
+    ampFreq3Label.setText("3rd Amp component", juce::dontSendNotification);
 
-    addAndMakeVisible(masterGain);
-    addAndMakeVisible(masterGainLabel);
+    addAndMakeVisible(ampFreq1);
+    addAndMakeVisible(ampFreq1Label);
+    addAndMakeVisible(ampFreq2);
+    addAndMakeVisible(ampFreq2Label);
+    addAndMakeVisible(ampFreq3);
+    addAndMakeVisible(ampFreq3Label);
 
-    addAndMakeVisible(gainOne);
-    addAndMakeVisible(gainLabelOne);
-    addAndMakeVisible(gainTwo);
-    addAndMakeVisible(gainLabelTwo);
-    addAndMakeVisible(gainThree);
-    addAndMakeVisible(gainLabelThree);
-
-    addAndMakeVisible(freqOne);
-    addAndMakeVisible(freqLabelOne);
-    addAndMakeVisible(freqTwo);
-    addAndMakeVisible(freqLabelTwo);
-    addAndMakeVisible(freqThree);
-    addAndMakeVisible(freqLabelThree);
+    addAndMakeVisible(modFreq1);
+    addAndMakeVisible(modFreq1Label);
+    addAndMakeVisible(modFreq2);
+    addAndMakeVisible(modFreq2Label);
+    addAndMakeVisible(modFreq3);
+    addAndMakeVisible(modFreq3Label);
 }
 
-Gr8_AdditiveSynthAudioProcessorEditor::~Gr8_AdditiveSynthAudioProcessorEditor()
+uSynthAudioProcessorEditor::~uSynthAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void Gr8_AdditiveSynthAudioProcessorEditor::paint (juce::Graphics& g)
+void uSynthAudioProcessorEditor::paint(juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+    g.setColour(juce::Colours::white);
+    g.setFont(15.0f);
+    g.drawFittedText("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
-void Gr8_AdditiveSynthAudioProcessorEditor::resized()
+void uSynthAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    int x;
-    int y;
+    modFreq1Label.setBounds(10, 10, 70, 20);
+    modFreq1.setBounds(10, 40, 70, 70);
 
-    masterGainLabel.setBounds(10, 10, 100, 50);
-    masterGain.setBounds(10, 60, 100, 200);
+    modFreq2Label.setBounds(90, 10, 70, 20);
+    modFreq2.setBounds(90, 40, 70, 70);
+    modFreq3Label.setBounds(170, 10, 70, 20);
+    modFreq3.setBounds(170, 40, 70, 70);
 
-    gainOne.setBounds(110, 10, 100, 200);
-    gainLabelOne.setBounds(110, 210, 100, 100);
+    ampFreq1Label.setBounds(10, 110, 20, 20);
+    ampFreq1.setBounds(10, 140, 20, 70);
 
-    gainTwo.setBounds(210, 10, 100, 200);
-    gainLabelTwo.setBounds(210, 210, 100, 100);
+    ampFreq2Label.setBounds(90, 110, 20, 20);
+    ampFreq2.setBounds(90, 140, 20, 70);
 
-    gainThree.setBounds(310, 10, 100, 200);
-    gainLabelThree.setBounds(310, 210, 100, 100);
+    ampFreq3Label.setBounds(170, 110, 20, 20);
+    ampFreq3.setBounds(170, 140, 20, 70);
 }
 
-void Gr8_AdditiveSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
+
+void uSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 {
-    if (slider == &masterGain) {
-        audioProcessor.setMasterGain(masterGain.getValue());
-    } else if (slider == &gainOne) {
-        audioProcessor.setOscGain(1, gainOne.getValue());
-    } else if (slider == &gainTwo) {
-        audioProcessor.setOscGain(2, gainTwo.getValue());
-    } else if (slider == &gainThree) {
-        audioProcessor.setOscGain(3, gainThree.getValue());
+    if (slider == &modFreq1)
+    {
+        //audioProcessor.setFreq1(modFreq1.getValue());
+        audioProcessor.setFreqRatios(1, modFreq1.getValue());
+    }
+    else if (slider == &modFreq2)
+    {
+        //audioProcessor.setFreq2(modFreq2.getValue());
+        audioProcessor.setFreqRatios(2, modFreq2.getValue());
+    }
+    else if (slider == &modFreq3)
+    {
+        //audioProcessor.setFreq3(modFreq3.getValue());
+        audioProcessor.setFreqRatios(3, modFreq3.getValue());
+    }
+    else if (slider == &ampFreq1)
+    {
+        //audioProcessor.setAmp1(ampFreq1.getValue());
+        audioProcessor.setAmps(1, ampFreq1.getValue());
+    }
+    else if (slider == &ampFreq2)
+    {
+        //audioProcessor.setAmp2(ampFreq2.getValue());
+        audioProcessor.setAmps(2, ampFreq2.getValue());
+    }
+    else if (slider == &ampFreq3)
+    {
+        //audioProcessor.setAmp3(ampFreq3.getValue());
+        audioProcessor.setAmps(3, ampFreq3.getValue());
     }
 }

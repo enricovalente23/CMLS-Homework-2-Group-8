@@ -14,43 +14,40 @@
 //==============================================================================
 /**
 */
-class Gr8_AdditiveSynthAudioProcessorEditor  : public juce::AudioProcessorEditor, private juce::Slider::Listener
+class uSynthAudioProcessorEditor : public juce::AudioProcessorEditor, private juce::Slider::Listener
 {
 public:
-    Gr8_AdditiveSynthAudioProcessorEditor (Gr8_AdditiveSynthAudioProcessor&);
-    ~Gr8_AdditiveSynthAudioProcessorEditor() override;
+    uSynthAudioProcessorEditor(uSynthAudioProcessor&);
+    ~uSynthAudioProcessorEditor() override;
 
     //==============================================================================
-    void paint (juce::Graphics&) override;
+    void paint(juce::Graphics&) override;
     void resized() override;
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    Gr8_AdditiveSynthAudioProcessor& audioProcessor;
+    uSynthAudioProcessor& audioProcessor;
 
-    juce::Slider masterGain;
-    juce::Label masterGainLabel;
+    juce::Slider modFreq1;
+    juce::Label modFreq1Label;
 
-    juce::Slider gainOne;
-    juce::Label gainLabelOne;
+    juce::Slider modFreq2;
+    juce::Label modFreq2Label;
 
-    juce::Slider gainTwo;
-    juce::Label gainLabelTwo;
+    juce::Slider modFreq3;
+    juce::Label modFreq3Label;
 
-    juce::Slider gainThree;
-    juce::Label gainLabelThree;
+    juce::Slider ampFreq1;
+    juce::Label ampFreq1Label;
 
-    juce::Slider freqOne;
-    juce::Label freqLabelOne;
+    juce::Slider ampFreq2;
+    juce::Label ampFreq2Label;
 
-    juce::Slider freqTwo;
-    juce::Label freqLabelTwo;
-
-    juce::Slider freqThree;
-    juce::Label freqLabelThree;
+    juce::Slider ampFreq3;
+    juce::Label ampFreq3Label;
 
     void sliderValueChanged(juce::Slider* slider) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Gr8_AdditiveSynthAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(uSynthAudioProcessorEditor)
 };

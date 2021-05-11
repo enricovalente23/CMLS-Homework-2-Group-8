@@ -50,6 +50,7 @@ public:
     int adjustPhase(int value);
     void updatePhase();
     float computeHarmonicOutput(float gain, float freqRatio, float* waveShape);
+    void initialize(float freq);
 
 private:
 

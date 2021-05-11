@@ -10,23 +10,27 @@
 
 #include <JuceHeader.h>
 #include "SynthVoice.h"
-
 //********************************************************************************************//
 // 1) define some global parameters
 
+#define SAMPLE_RATE   (44100)
 #define TOT_VOICES 16
+#define NO_ACTIVE -1
 
+#ifndef M_PI
+#define M_PI  (3.14159265)
+#endif
 
 //********************************************************************************************//
 //==============================================================================
 /**
 */
-class Gr8_AdditiveSynthAudioProcessor : public juce::AudioProcessor
+class uSynthAudioProcessor : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    Gr8_AdditiveSynthAudioProcessor();
-    ~Gr8_AdditiveSynthAudioProcessor() override;
+    uSynthAudioProcessor();
+    ~uSynthAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay(double sampleRate, int samplesPerBlock) override;
@@ -61,9 +65,16 @@ public:
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
 
-    void setMasterGain(float val);
-    void setOscGain(int index, float val);
-    void setOscFreqRatio(int index, float val);
+    void setFreq1(float val);
+    void setFreq2(float val);
+    void setFreq3(float val);
+    void setAmp1(float val);
+    void setAmp2(float val);
+    void setAmp3(float val);
+
+    //Jit
+    void setAmps(int index, float value);
+    void setFreqRatios(int index, float value);
     void updateFirstFreeVoice(int index);
     void updateLastActiveVoice(int index);
     int getVoiceIndex(float freq);
@@ -73,7 +84,33 @@ private:
     //==============================================================================
     //********************************************************************************************//
     // 2) add to the Processor class the variables we need for the FM synth
+    float mod_phase;
+    float mod_freq;
+    int mod_index;
 
+    float phase;
+    float phase1;
+    float phase2;
+    float phase3;
+
+    float amp;
+    float amp1Parameter;
+    float amp2Parameter;
+    float amp3Parameter;
+
+    float car_freq;
+    float car_freq1;
+    float car_freq2;
+    float car_freq3;
+
+    float freq1Parameter; //just as an example //multiplication factors for each additive part
+    float freq2Parameter;  //just as an example
+    float freq3Parameter; //just as an example
+
+    //Jit
+    SynthVoice voices[TOT_VOICES];
+    float amps[TOT_HARMONICS];
+    float freqRatio[TOT_HARMONICS];
     float waveShape[SAMPLE_RATE];
 
     int attack;
@@ -81,16 +118,11 @@ private:
     int sustain;
     int release;
 
-    float masterGain;
-    float oscGains[TOT_HARMONICS];
-    float oscFreqRatio[TOT_HARMONICS];
-    SynthVoice voices[TOT_VOICES];
-
-    int numCurrentlyPlaying = 0;
-    int firstFreeVoice = 0;
-    int lastActiveVoice = -1;
+    int numCurrentlyPlaying;
+    int firstFreeVoice;
+    int lastActiveVoice;
 
     //********************************************************************************************//
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Gr8_AdditiveSynthAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(uSynthAudioProcessor)
 };
