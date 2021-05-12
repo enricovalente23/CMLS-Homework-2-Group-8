@@ -15,7 +15,9 @@
 #define INITIAL_FREQ 0.0
 #define INITIAL_PHASE 0
 #define INITIAL_TIME 0.0
+#define INITIAL_RELEASE_GAIN 0.0
 #define TOT_HARMONICS 4
+#define DIM_ADSR 4
 
 #ifndef M_PI
 #define M_PI  3.14159265
@@ -46,11 +48,13 @@ public:
     void setPhase(int value);
     void setState(ADSRState newState);
 
-    float computeCurrentOutputValue(float* oscGains, float* oscFreqRatio, float* waveShape);
+    float computeCurrentOutputValue(float* oscGains, float* oscFreqRatio, float* waveShape, float* adsr);
     int adjustPhase(int value);
     void updatePhase();
     float computeHarmonicOutput(float gain, float freqRatio, float* waveShape);
     void initialize(float freq);
+    float computeGain(float* adsr);
+    void release();
 
 private:
 
@@ -59,4 +63,5 @@ private:
     int phase;
     float freq;
     float activeTime;
+    float releaseGain;
 };

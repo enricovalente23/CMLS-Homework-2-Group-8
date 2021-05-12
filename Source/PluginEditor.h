@@ -42,7 +42,7 @@ private:
     juce::Label modFreq3Label;
 
     juce::Slider ampFreq0;
-    juce::Label ampFreq1Labe0;
+    juce::Label ampFreq0Label;
 
     juce::Slider ampFreq1;
     juce::Label ampFreq1Label;

@@ -67,7 +67,7 @@ public:
 
     //OUR CODE
 
-    void setFreq1(float val);
+    /*void setFreq1(float val);
     void setFreq2(float val);
     void setFreq3(float val);
     void setMaster(float val);
@@ -78,7 +78,7 @@ public:
     void setAttack(float val);
     void setDecay(float val);
     void setSustain(float val);
-    void setRelease(float val);
+    void setRelease(float val);*/
 
 
     //Jit
@@ -89,42 +89,44 @@ public:
     void updateLastActiveVoice(int index);
     int getVoiceIndex(float freq);
     void initWaveShape();
+    void setAdsrParam(int index, float value);
+    //End Jit
 
 private:
     //==============================================================================
     //********************************************************************************************//
     // 2) add to the Processor class the variables we need for the FM synth
-    float mod_phase;
-    float mod_freq;
-    int mod_index;
+    //float mod_phase;
+    //float mod_freq;
+    //int mod_index;
 
-    float phase;
-    float phase1;
-    float phase2;
-    float phase3;
+    //float phase;
+    //float phase1;
+    //float phase2;
+    //float phase3;
 
-    float amp;
-    float MasterParameter;
-    float amp0Parameter;
-    float amp1Parameter;
-    float amp2Parameter;
-    float amp3Parameter;
+    //float amp;
+    //float MasterParameter;
+    //float amp0Parameter;
+    //float amp1Parameter;
+    //float amp2Parameter;
+    //float amp3Parameter;
 
-    float car_freq;
-    float car_freq1;
-    float car_freq2;
-    float car_freq3;
+    //float car_freq;
+    //float car_freq1;
+    //float car_freq2;
+    //float car_freq3;
 
-    float freq1Parameter; //just as an example //multiplication factors for each additive part
-    float freq2Parameter;  //just as an example
-    float freq3Parameter; //just as an example
+    //float freq1Parameter; //just as an example //multiplication factors for each additive part
+    //float freq2Parameter;  //just as an example
+    //float freq3Parameter; //just as an example
 
-    float AttackParameter;
-    float DecayParameter;
-    float SustainParameter;
-    float ReleaseParameter;
-    juce::ADSR adsr;
-    juce::ADSR::Parameters adsrParams;
+    //float AttackParameter;
+    //float DecayParameter;
+    //float SustainParameter;
+    //float ReleaseParameter;
+    //juce::ADSR adsr;
+    //juce::ADSR::Parameters adsrParams;
 
     //Jit
     SynthVoice voices[TOT_VOICES];
@@ -133,10 +135,7 @@ private:
     float freqRatio[TOT_HARMONICS];
     float waveShape[SAMPLE_RATE];
 
-    int attack;
-    int decay;
-    int sustain;
-    int release;
+    float adsrParam[DIM_ADSR];
 
     int numCurrentlyPlaying;
     int firstFreeVoice;

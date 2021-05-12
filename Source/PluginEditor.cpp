@@ -17,17 +17,17 @@ uSynthAudioProcessorEditor::uSynthAudioProcessorEditor(uSynthAudioProcessor& p)
     // editor's size to whatever you need it to be.
     setSize(1200, 400);
 
-    modFreq1.setRange(0.0, 3.0, 0.1);
+    modFreq1.setRange(0.25, 4.0, 0.05);
     modFreq1.setSliderStyle(juce::Slider::Rotary);
     modFreq1.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     modFreq1.addListener(this);
 
-    modFreq2.setRange(0.0, 3.0, 0.1);
+    modFreq2.setRange(0.25, 4.0, 0.05);
     modFreq2.setSliderStyle(juce::Slider::Rotary);
     modFreq2.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     modFreq2.addListener(this);
 
-    modFreq3.setRange(0.0, 3.0, 0.1);
+    modFreq3.setRange(0.25, 4.0, 0.05);
     modFreq3.setSliderStyle(juce::Slider::Rotary);
     modFreq3.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     modFreq3.addListener(this);
@@ -40,47 +40,79 @@ uSynthAudioProcessorEditor::uSynthAudioProcessorEditor(uSynthAudioProcessor& p)
     modFreq3Label.setJustificationType(juce::Justification::centred);
 
 
-    Master.setRange(0.0, 0.1, 0.01);
+    Master.setRange(0.0, 1.0, 0.01);
     Master.setSliderStyle(juce::Slider::LinearVertical);
     Master.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     Master.addListener(this);
 
-    ampFreq0.setRange(0.0, 0.1, 0.01);
+    ampFreq0.setRange(0.0, 1.0, 0.01);
     ampFreq0.setSliderStyle(juce::Slider::LinearVertical);
     ampFreq0.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     ampFreq0.addListener(this);
 
-    ampFreq1.setRange(0.0, 0.1, 0.01);
+    ampFreq1.setRange(0.0, 1.0, 0.01);
     ampFreq1.setSliderStyle(juce::Slider::LinearVertical);
     ampFreq1.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     ampFreq1.addListener(this);
 
-    ampFreq2.setRange(0.0, 0.1, 0.01);
+    ampFreq2.setRange(0.0, 1.0, 0.01);
     ampFreq2.setSliderStyle(juce::Slider::LinearVertical);
     ampFreq2.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     ampFreq2.addListener(this);
 
-    ampFreq3.setRange(0.0, 0.1, 0.01);
+    ampFreq3.setRange(0.0, 1.0, 0.01);
     ampFreq3.setSliderStyle(juce::Slider::LinearVertical);
     ampFreq3.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
     ampFreq3.addListener(this);
 
+
+    Attack.setRange(0.01, 1.0, 0.01);
+    Attack.setSliderStyle(juce::Slider::LinearVertical);
+    Attack.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    Attack.addListener(this);
+
+    Decay.setRange(0.01, 1.0, 0.01);
+    Decay.setSliderStyle(juce::Slider::LinearVertical);
+    Decay.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    Decay.addListener(this);
+
+    Sustain.setRange(0.01, 1.0, 0.01);
+    Sustain.setSliderStyle(juce::Slider::LinearVertical);
+    Sustain.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    Sustain.addListener(this);
+
+    Release.setRange(0.001, 1.0, 0.01);
+    Release.setSliderStyle(juce::Slider::LinearVertical);
+    Release.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+    Release.addListener(this);
+
+
     MasterLabel.setText("Master", juce::dontSendNotification);
     MasterLabel.setJustificationType(juce::Justification::centred);
-    /*ampFreq0Label.setText("Gain 0", juce::dontSendNotification);
-     ampFreq0Label.setJustificationType(juce::Justification::centred);*/
+    ampFreq0Label.setText("Gain 0", juce::dontSendNotification);
+    ampFreq0Label.setJustificationType(juce::Justification::centred);
     ampFreq1Label.setText("Gain 1", juce::dontSendNotification);
-    ampFreq3Label.setJustificationType(juce::Justification::centred);
+    ampFreq1Label.setJustificationType(juce::Justification::centred);
     ampFreq2Label.setText("Gain 2", juce::dontSendNotification);
     ampFreq2Label.setJustificationType(juce::Justification::centred);
     ampFreq3Label.setText("Gain 3", juce::dontSendNotification);
     ampFreq3Label.setJustificationType(juce::Justification::centred);
 
 
+    AttackLabel.setText("Attack", juce::dontSendNotification);
+    AttackLabel.setJustificationType(juce::Justification::centred);
+    DecayLabel.setText("Decay", juce::dontSendNotification);
+    DecayLabel.setJustificationType(juce::Justification::centred);
+    SustainLabel.setText("Sustain", juce::dontSendNotification);
+    SustainLabel.setJustificationType(juce::Justification::centred);
+    ReleaseLabel.setText("Release", juce::dontSendNotification);
+    ReleaseLabel.setJustificationType(juce::Justification::centred);
+
+
     addAndMakeVisible(Master);
     addAndMakeVisible(MasterLabel);
     addAndMakeVisible(ampFreq0);
-    /*addAndMakeVisible(ampFreq0Label);*/
+    addAndMakeVisible(ampFreq0Label);
     addAndMakeVisible(ampFreq1);
     addAndMakeVisible(ampFreq1Label);
     addAndMakeVisible(ampFreq2);
@@ -101,6 +133,15 @@ uSynthAudioProcessorEditor::uSynthAudioProcessorEditor(uSynthAudioProcessor& p)
     addAndMakeVisible(modFreq2Label);
     addAndMakeVisible(modFreq3);
     addAndMakeVisible(modFreq3Label);
+
+    addAndMakeVisible(Attack);
+    addAndMakeVisible(AttackLabel);
+    addAndMakeVisible(Decay);
+    addAndMakeVisible(DecayLabel);
+    addAndMakeVisible(Sustain);
+    addAndMakeVisible(SustainLabel);
+    addAndMakeVisible(Release);
+    addAndMakeVisible(ReleaseLabel);
 }
 
 uSynthAudioProcessorEditor::~uSynthAudioProcessorEditor()
@@ -120,32 +161,32 @@ void uSynthAudioProcessorEditor::paint(juce::Graphics& g)
 
 void uSynthAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
     auto w = getWidth();
     auto h = getHeight();
     auto margin = 10;
 
-    MasterLabel.setBounds(w * 0.0f / 9.0f, 0, w / 4.0f, 15);
+    MasterLabel.setBounds(w * 0.0f / 9.0f, 0, w / 9.0f, 15);
     /*ampFreq0Label.setBounds(w * 1.0f / 9.0f, 0, w / 4.0f, 15);*/
 
-    /*
-     AttackLabel.setBounds(w * 5.0f / 9.0f, 0, w / 4.0f, 15);
-     DecayLabel.setBounds(w * 6.0f / 9.0f, 0, w / 4.0f, 15);
-     SustainLabel.setBounds(w * 7.0f / 9.0f, 0, w / 4.0f, 15);
-     ReleaseLabel.setBounds(w * 8.0f / 9.0f, 0, w / 4.0f, 15);
-     */
 
 
-     /// Labels Freq Oscillators
+    /// Labels Freq Oscillators
     auto LabelW = w * (1 / 9.0f);
     auto LabelH = 15;
-    /*ampFreq1Label.setBounds (w * (1 / 9.0f), 0, LabelW, LabelH);*/
+
     modFreq1Label.setBounds(w * (2 / 9.0f), 0, LabelW, LabelH);
     modFreq2Label.setBounds(w * (3 / 9.0f), 0, LabelW, LabelH);
     modFreq3Label.setBounds(w * (4 / 9.0f), 0, LabelW, LabelH);
 
-    /// Frequency sliders on the first row
+
+    /// Labels ADSR
+    AttackLabel.setBounds(w * 5.0f / 9.0f, 0, w / 9.0f, 15);
+    DecayLabel.setBounds(w * 6.0f / 9.0f, 0, w / 9.0f, 15);
+    SustainLabel.setBounds(w * 7.0f / 9.0f, 0, w / 9.0f, 15);
+    ReleaseLabel.setBounds(w * 8.0f / 9.0f, 0, w / 9.0f, 15);
+
+
+    /// Frequency knobs above gain sliders
     auto scale = 0.5f;
     auto sw = scale * w * (1 / 9.0f);
     auto off = (1 - scale) * w * (1 / 9.0f) * 0.5;
@@ -157,6 +198,7 @@ void uSynthAudioProcessorEditor::resized()
     /// Labels Gain
     auto slg = sYf + sw + 2 * margin;
 
+    ampFreq0Label.setBounds(w * (1 / 9.0f), 0, LabelW, LabelH);
     ampFreq1Label.setBounds(w * (2 / 9.0f), slg, LabelW, LabelH);
     ampFreq2Label.setBounds(w * (3 / 9.0f), slg, LabelW, LabelH);
     ampFreq3Label.setBounds(w * (4 / 9.0f), slg, LabelW, LabelH);
@@ -165,60 +207,54 @@ void uSynthAudioProcessorEditor::resized()
     auto sh = h - sYg;
     sw = w * (1 / 9.0f);
 
-    /// Gain sliders on the second row
+    /// Gain sliders below frequency sliders
     ampFreq0.setBounds(w * (1 / 9.0f), sYf, sw, h - sYf);
+
     ampFreq1.setBounds(w * (2 / 9.0f), sYg, sw, sh);
     ampFreq2.setBounds(w * (3 / 9.0f), sYg, sw, sh);
     ampFreq3.setBounds(w * (4 / 9.0f), sYg, sw, sh);
 
 
     Master.setBounds(w * 0.0f / 9.0f, 15, w / 9.0f, h - 15);
-    /*ampFreq0.setBounds(w * 1.0f / 9.0f, 15, w / 4.0f, h - 15);*/
+    /*ampFreq0.setBounds(w * 1.0f / 9.0f, 15, w / 9.0f, h - 15);*/
 
-    /*
-     ampFreq1.setBounds(w * 2.0f / 9.0f, 15, w / 4.0f, h - 15);
-     ampFreq2.setBounds(w * 3.0f / 9.0f, 15, w / 4.0f, h - 15);
-     ampFreq3.setBounds(w * 4.0f / 9.0f, 15, w / 4.0f, h - 15);
+    Attack.setBounds(w * 5.0f / 9.0f, 15, w / 9.0f, h - 15);
+    Decay.setBounds(w * 6.0f / 9.0f, 15, w / 9.0f, h - 15);
+    Sustain.setBounds(w * 7.0f / 9.0f, 15, w / 9.0f, h - 15);
+    Release.setBounds(w * 8.0f / 9.0f, 15, w / 9.0f, h - 15);
+
+
+
+
+
+    /*VECCHIO CODICE
+     // This is generally where you'll want to lay out the positions of any
+     // subcomponents in your editor..
+     modFreq1Label.setBounds(10,10,70,20);
+     modFreq1.setBounds(10,40,70,70);
+     modFreq2Label.setBounds(90,10,70,20);
+     modFreq2.setBounds(90,40,70,70);
+     modFreq3Label.setBounds(170,10,70,20);
+     modFreq3.setBounds(170,40,70,70);
+
+     MasterLabel.setBounds(10, 10, 70, 20);
+     Master.setBounds(10, 40, 70, 70);
+
+     //ampFreq0Label.setBounds(10, 110, 20, 20);
+     ampFreq0.setBounds(10, 140, 20, 70);
+     ampFreq1Label.setBounds(10,110,20,20);
+     ampFreq1.setBounds(10,140,20,70);
+     ampFreq2Label.setBounds(90,110,20,20);
+     ampFreq2.setBounds(90,140,20,70);
+     ampFreq3Label.setBounds(170,110,20,20);
+     ampFreq3.setBounds(170,140,20,70);
      */
-
-     /*
-      Attack.setBounds(w * 5.0f / 9.0f, 15, w / 4.0f, h - 15);
-      Decay.setBounds(w * 6.0f / 9.0f, 15, w / 4.0f, h - 15);
-      Sustain.setBounds(w * 7.0f / 9.0f, 15, w / 4.0f, h - 15);
-      Release.setBounds(w * 8.0f / 9.0f, 15, w / 4.0f, h - 15);
-      */
-
-
-
-
-      /*
-       // This is generally where you'll want to lay out the positions of any
-       // subcomponents in your editor..
-       modFreq1Label.setBounds(10,10,70,20);
-       modFreq1.setBounds(10,40,70,70);
-       modFreq2Label.setBounds(90,10,70,20);
-       modFreq2.setBounds(90,40,70,70);
-       modFreq3Label.setBounds(170,10,70,20);
-       modFreq3.setBounds(170,40,70,70);
-
-       MasterLabel.setBounds(10, 10, 70, 20);
-       Master.setBounds(10, 40, 70, 70);
-
-       //ampFreq0Label.setBounds(10, 110, 20, 20);
-       ampFreq0.setBounds(10, 140, 20, 70);
-       ampFreq1Label.setBounds(10,110,20,20);
-       ampFreq1.setBounds(10,140,20,70);
-       ampFreq2Label.setBounds(90,110,20,20);
-       ampFreq2.setBounds(90,140,20,70);
-       ampFreq3Label.setBounds(170,110,20,20);
-       ampFreq3.setBounds(170,140,20,70);
-       */
 }
 
 
 void uSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
 {
-    if (slider == &modFreq1)
+    /*if (slider == &modFreq1)
     {
         audioProcessor.setFreq1(modFreq1.getValue());
     }
@@ -229,10 +265,6 @@ void uSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
     else if (slider == &modFreq3)
     {
         audioProcessor.setFreq3(modFreq3.getValue());
-    }
-    else if (slider == &ampFreq0)
-    {
-        audioProcessor.setAmp0(ampFreq0.getValue());
     }
     else if (slider == &ampFreq1)
     {
@@ -250,6 +282,10 @@ void uSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
     {
         audioProcessor.setMaster(Master.getValue());
     }
+    else if (slider == &ampFreq0)
+    {
+        audioProcessor.setAmp0(ampFreq0.getValue());
+    }
     else if (slider == &Attack)
     {
         audioProcessor.setAttack(Attack.getValue());
@@ -265,10 +301,10 @@ void uSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
     else if (slider == &Release)
     {
         audioProcessor.setRelease(Release.getValue());
-    }
+    }*/
 
-
-    //Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit 
+    //Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit
+    //DO NOT DELETE
     if (slider == &modFreq1)
     {
         audioProcessor.setFreqRatios(1, modFreq1.getValue());
@@ -303,18 +339,18 @@ void uSynthAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
     }
     else if (slider == &Attack)
     {
-        audioProcessor.setAttack(Attack.getValue());
+        audioProcessor.setAdsrParam(0, Attack.getValue());
     }
     else if (slider == &Decay)
     {
-        audioProcessor.setDecay(Decay.getValue());
+        audioProcessor.setAdsrParam(1, Attack.getValue());
     }
     else if (slider == &Sustain)
     {
-        audioProcessor.setSustain(Sustain.getValue());
+        audioProcessor.setAdsrParam(2, Attack.getValue());
     }
     else if (slider == &Release)
     {
-        audioProcessor.setRelease(Release.getValue());
+        audioProcessor.setAdsrParam(3, Attack.getValue());
     }
 }
