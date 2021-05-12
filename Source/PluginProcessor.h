@@ -65,14 +65,24 @@ public:
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
 
+    //OUR CODE
+
     void setFreq1(float val);
     void setFreq2(float val);
     void setFreq3(float val);
+    void setMaster(float val);
+    void setAmp0(float val);
     void setAmp1(float val);
     void setAmp2(float val);
     void setAmp3(float val);
+    void setAttack(float val);
+    void setDecay(float val);
+    void setSustain(float val);
+    void setRelease(float val);
+
 
     //Jit
+    void setMasterGain(float value);
     void setAmps(int index, float value);
     void setFreqRatios(int index, float value);
     void updateFirstFreeVoice(int index);
@@ -94,6 +104,8 @@ private:
     float phase3;
 
     float amp;
+    float MasterParameter;
+    float amp0Parameter;
     float amp1Parameter;
     float amp2Parameter;
     float amp3Parameter;
@@ -107,8 +119,16 @@ private:
     float freq2Parameter;  //just as an example
     float freq3Parameter; //just as an example
 
+    float AttackParameter;
+    float DecayParameter;
+    float SustainParameter;
+    float ReleaseParameter;
+    juce::ADSR adsr;
+    juce::ADSR::Parameters adsrParams;
+
     //Jit
     SynthVoice voices[TOT_VOICES];
+    float masterGain;
     float amps[TOT_HARMONICS];
     float freqRatio[TOT_HARMONICS];
     float waveShape[SAMPLE_RATE];

@@ -29,6 +29,9 @@ private:
     // access the processor object that created it.
     uSynthAudioProcessor& audioProcessor;
 
+    juce::Slider Master;
+    juce::Label MasterLabel;
+
     juce::Slider modFreq1;
     juce::Label modFreq1Label;
 
@@ -38,6 +41,9 @@ private:
     juce::Slider modFreq3;
     juce::Label modFreq3Label;
 
+    juce::Slider ampFreq0;
+    juce::Label ampFreq1Labe0;
+
     juce::Slider ampFreq1;
     juce::Label ampFreq1Label;
 
@@ -46,6 +52,19 @@ private:
 
     juce::Slider ampFreq3;
     juce::Label ampFreq3Label;
+
+
+    juce::Slider Attack;
+    juce::Label AttackLabel;
+
+    juce::Slider Decay;
+    juce::Label DecayLabel;
+
+    juce::Slider Sustain;
+    juce::Label SustainLabel;
+
+    juce::Slider Release;
+    juce::Label ReleaseLabel;
 
     void sliderValueChanged(juce::Slider* slider) override;
 

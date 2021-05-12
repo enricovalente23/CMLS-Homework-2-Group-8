@@ -53,6 +53,7 @@ void SynthVoice::setFreq(float value) {
 
 void SynthVoice::activate() {
     active = true;
+    setState(ADSRState::ATTACK);
 }
 
 void SynthVoice::deactivate() {

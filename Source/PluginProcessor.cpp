@@ -97,16 +97,23 @@ void uSynthAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     // initialisation that you need..
      //********************************************************************************************//
     //3) Initialize the field of the structure FMData data
-    amp = 1.0;
+    amp = 0.1;
+    amp1Parameter = 0.1;
+    amp2Parameter = 0.1;
+    amp3Parameter = 0.1;
+
     phase = 2.0;
     phase1 = 2.0;
-    car_freq = 55;
+    phase2 = 2.0;
+    phase3 = 2.0;
+
+    car_freq = 0.0;
     car_freq1 = 0.0;
+    car_freq2 = 0.0;
+    car_freq3 = 0.0;
 
-    mod_freq = 0.0;
-    mod_phase = 1.0;
-    mod_index = 0.0;
 
+    //Jit
     numCurrentlyPlaying = 0;
     firstFreeVoice = 0;
     lastActiveVoice = NO_ACTIVE;
@@ -118,7 +125,7 @@ void uSynthAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
     for (int i = 0; i < TOT_VOICES; i++) {
         SynthVoice voice;
-        voice.initialize(INITIAL_FREQ);
+        voice.initialize((float)car_freq);
         voice.deactivate();
         voices[i] = voice;
     }
@@ -190,9 +197,10 @@ void uSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
 
     //********************************************************************************************//
     // 4) implement the actual FM synthesis: first retrieve the note value from the NoteOn messages
-    float mod;
     juce::MidiMessage m;
     int time;
+    float flagMidi;
+    adsr.setSampleRate(static_cast<double> SAMPLE_RATE);
 
     //Jit
     int index;
@@ -205,12 +213,27 @@ void uSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         {
             //Umut
             amp = 0.1;
+            flagMidi = 1;
+            AttackParameter = 1;
+            DecayParameter = 1;
+            SustainParameter = 1;
+            ReleaseParameter = 1;
+
+            adsr.setParameters({
+                AttackParameter,
+                DecayParameter,
+                SustainParameter,
+                ReleaseParameter
+                });
+            adsr.noteOn();
+
+            //Don't delete this
             car_freq = m.getMidiNoteInHertz(m.getNoteNumber());
 
             //Jit
             if (numCurrentlyPlaying < TOT_VOICES) {
                 voice = voices[firstFreeVoice];
-                voice.initialize((float)m.getMidiNoteInHertz(m.getNoteNumber()));
+                voice.initialize((float)car_freq);
                 numCurrentlyPlaying++;
 
                 if (firstFreeVoice > lastActiveVoice) {
@@ -225,6 +248,7 @@ void uSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         {
             //Umut
             amp = 0;
+            adsr.noteOff();
 
             //Jit
             index = getVoiceIndex(m.getMidiNoteInHertz(m.getNoteNumber()));
@@ -261,24 +285,7 @@ void uSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         car_freq2 = freq2Parameter * car_freq;
         car_freq3 = freq3Parameter * car_freq;
 
-        //total = amp * (float) sin ((double) phase) + amp * (float) sin ((double) phase1) + amp * (float) sin ((double) phase2) + amp * (float) sin ((double) phase3);
-        //total = amp * (float)sin((double)phase) + amp1Parameter * (float)sin((double)phase1) + amp2Parameter * (float)sin((double)phase2) + amp3Parameter * (float)sin((double)phase3);
-        
-        //Jit
-        for (int j = 0; j < TOT_VOICES; j++) {
-            if (voices[j].isActive()) {
-                total += voices[j].computeCurrentOutputValue(amps, freqRatio, waveShape);
-            }
-        }
-
-        total = total * amps[0];//Using amp[0] until masterGain is implemented
-
-        if (total > 1.0) {
-            total = 1.0;
-        } else if (total < -1.0) {
-            total = -1.0;        
-        }
-        //End Jit
+        total = (amp * (float)sin((double)phase) + amp1Parameter * (float)sin((double)phase1) + amp2Parameter * (float)sin((double)phase2) + amp3Parameter * (float)sin((double)phase3)) * MasterParameter * adsr.getNextSample();
 
         channelDataL[i] = total;
         channelDataR[i] = total;
@@ -293,6 +300,25 @@ void uSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
         if (phase2 >= M_PI * 2.) phase2 -= M_PI * 2.;
         if (phase3 >= M_PI * 2.) phase3 -= M_PI * 2.;
 
+        //Jit
+        //float output = 0.0;
+        //for (int j = 0; j < TOT_VOICES; j++) {
+        //    if (voices[j].isActive()) {
+        //        output += voices[j].computeCurrentOutputValue(amps, freqRatio, waveShape);
+        //    }
+        //}
+
+        //output *= masterGain;//Using amp[0] until masterGain is implemented
+
+        //if (output > 1.0) {
+        //    output = 1.0;
+        //} else if (output < -1.0) {
+        //    output = -1.0;        
+        //}
+
+        //channelDataL[i] = output;
+        //channelDataR[i] = output;
+        //End Jit
     }
     //********************************************************************************************//
 
@@ -312,6 +338,17 @@ void uSynthAudioProcessor::setFreq3(float val)
 {
     freq3Parameter = val;
 }
+
+void uSynthAudioProcessor::setMaster(float val)
+{
+    MasterParameter = val;
+}
+
+void uSynthAudioProcessor::setAmp0(float val)
+{
+    amp0Parameter = val;
+}
+
 void uSynthAudioProcessor::setAmp1(float val)
 {
     amp1Parameter = val;
@@ -326,9 +363,32 @@ void uSynthAudioProcessor::setAmp3(float val)
 {
     amp3Parameter = val;
 }
+void uSynthAudioProcessor::setAttack(float val)
+{
+    AttackParameter = val;
+}
 
-//Jit
+void uSynthAudioProcessor::setDecay(float val)
+{
+    DecayParameter = val;
+}
+
+void uSynthAudioProcessor::setSustain(float val)
+{
+    SustainParameter = val;
+}
+
+void uSynthAudioProcessor::setRelease(float val)
+{
+    ReleaseParameter = val;
+}
+
+//Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit Jit 
 //Returns the lowest index to a free voice
+
+void uSynthAudioProcessor::setMasterGain(float value) {
+    masterGain = value;
+}
 void uSynthAudioProcessor::updateFirstFreeVoice(int index) {
     if (numCurrentlyPlaying < TOT_VOICES) {
         while (index < TOT_VOICES && voices[index].isActive()) {
