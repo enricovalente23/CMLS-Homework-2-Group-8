@@ -38,10 +38,10 @@
  #define JucePlugin_Enable_IAA             0
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "uSynth"
+ #define JucePlugin_Name                   "AdditiveSynthesis_Gr8"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "uSynth"
+ #define JucePlugin_Desc                   "AdditiveSynthesis_Gr8"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "yourcompany"
@@ -56,7 +56,7 @@
  #define JucePlugin_ManufacturerCode       0x4d616e75
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x51726864
+ #define JucePlugin_PluginCode             0x4d76716b
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                1
@@ -98,16 +98,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         uSynthAU
+ #define JucePlugin_AUExportPrefix         AdditiveSynthesis_Gr8AU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "uSynthAU"
+ #define JucePlugin_AUExportPrefixQuoted   "AdditiveSynthesis_Gr8AU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.yourcompany.uSynth
+ #define JucePlugin_CFBundleIdentifier     com.yourcompany.AdditiveSynthesis_Gr8
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           2048
@@ -125,7 +125,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.uSynth
+ #define JucePlugin_AAXIdentifier          com.yourcompany.AdditiveSynthesis_Gr8
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
@@ -149,7 +149,7 @@
  #define JucePlugin_IAASubType             JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_IAAName
- #define JucePlugin_IAAName                "yourcompany: uSynth"
+ #define JucePlugin_IAAName                "yourcompany: AdditiveSynthesis_Gr8"
 #endif
 #ifndef  JucePlugin_VSTNumMidiInputs
  #define JucePlugin_VSTNumMidiInputs       16
