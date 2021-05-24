@@ -166,7 +166,6 @@ void AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     // 4) implement the actual FM synthesis: first retrieve the note value from the NoteOn messages
     juce::MidiMessage m;
     int time;
-    int16_t acca;
     adsr.setSampleRate(static_cast<double> SAMPLE_RATE);
     float tremolo; //container for tremolo effect array
 
@@ -181,6 +180,7 @@ void AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
                 SustainParameter,
                 ReleaseParameter
             });
+            
             adsr.noteOn();
             //Also get the note the midi is playing
             car_freq = m.getMidiNoteInHertz(m.getNoteNumber());
@@ -195,8 +195,8 @@ void AdditiveSynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         }
         else if (m.isPitchWheel())
         {
-            tremolo_amp = (float) (m.getPitchWheelValue()) /16383; //Dividing by the conversion offset from 14bit to float
-
+            tremolo_amp = (float) (m.getPitchWheelValue()); //Dividing by the conversion offset from 14bit to float
+            tremolo_amp = tremolo_amp/16383;
         }
     }
     //get write pointers for L and R channels

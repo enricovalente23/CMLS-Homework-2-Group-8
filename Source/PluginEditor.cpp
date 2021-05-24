@@ -15,7 +15,7 @@ AdditiveSynthAudioProcessorEditor::AdditiveSynthAudioProcessorEditor (AdditiveSy
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (1700, 600);
+    setSize (1400, 600);
     
     modFreq1.setRange(0.25,4.0,0.05);
     modFreq1.setSliderStyle(juce::Slider::Rotary);
@@ -40,6 +40,7 @@ AdditiveSynthAudioProcessorEditor::AdditiveSynthAudioProcessorEditor (AdditiveSy
     modFreq3Label.setJustificationType(juce::Justification::centred);
     
     
+    getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::orange);
     
     Master.setRange(0.0, 1.0, 0.05);
     Master.setSliderStyle(juce::Slider::LinearVertical);
@@ -176,10 +177,8 @@ AdditiveSynthAudioProcessorEditor::~AdditiveSynthAudioProcessorEditor()
 void AdditiveSynthAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    auto backgroundColourId = juce::Colours::orange;
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-    
-    g.setColour (juce::Colours::white);
+    g.fillAll(juce::Colours::black);
+    g.setColour (juce::Colours::orange);
 }
 
 void AdditiveSynthAudioProcessorEditor::resized()
@@ -202,18 +201,18 @@ void AdditiveSynthAudioProcessorEditor::resized()
     
     
     
-    PanningLabel.setBounds(w * (0 / 9.0f), 0, LabelW, LabelH);
-    TremoloVelLabel.setBounds(w * (1 / 9.0f), 0, LabelW, LabelH);
-    modFreq1Label.setBounds (w * (2 / 9.0f), 0, LabelW, LabelH);
-    modFreq2Label.setBounds (w * (3 / 9.0f), 0, LabelW, LabelH);
-    modFreq3Label.setBounds (w * (4 / 9.0f), 0, LabelW, LabelH);
+    PanningLabel.setBounds(w * (0 / 9.0f), 10, LabelW, LabelH);
+    TremoloVelLabel.setBounds(w * (1 / 9.0f), 10, LabelW, LabelH);
+    modFreq1Label.setBounds (w * (2 / 9.0f), 10, LabelW, LabelH);
+    modFreq2Label.setBounds (w * (3 / 9.0f), 10, LabelW, LabelH);
+    modFreq3Label.setBounds (w * (4 / 9.0f), 10, LabelW, LabelH);
     
     
     /// Labels ADSR
-    AttackLabel.setBounds(w * 5.0f / 9.0f, 0, w / 9.0f, 15);
-    DecayLabel.setBounds(w * 6.0f / 9.0f, 0, w / 9.0f, 15);
-    SustainLabel.setBounds(w * 7.0f / 9.0f, 0, w / 9.0f, 15);
-    ReleaseLabel.setBounds(w * 8.0f / 9.0f, 0, w / 9.0f, 15);
+    AttackLabel.setBounds(w * 5.0f / 9.0f, 10, w / 9.0f, 15);
+    DecayLabel.setBounds(w * 6.0f / 9.0f, 10, w / 9.0f, 15);
+    SustainLabel.setBounds(w * 7.0f / 9.0f, 10, w / 9.0f, 15);
+    ReleaseLabel.setBounds(w * 8.0f / 9.0f, 10, w / 9.0f, 15);
     
     
     /// Frequency and tremolo knobs above gain sliders
@@ -244,21 +243,21 @@ void AdditiveSynthAudioProcessorEditor::resized()
     
     /*ampFreq0.setBounds (w * (1 / 9.0f), sYf, sw, h - sYf);*/
     
-    Master.setBounds(w * (0 / 9.0f), sYg, sw, sh);
-    ampFreq0.setBounds(w * (1 / 9.0f), sYg, sw, sh);
-    ampFreq1.setBounds (w * (2 / 9.0f), sYg, sw, sh);
-    ampFreq2.setBounds (w * (3 / 9.0f), sYg, sw, sh);
-    ampFreq3.setBounds (w * (4 / 9.0f), sYg, sw, sh);
+    Master.setBounds(w * (0 / 9.0f), sYg, sw, sh - 5);
+    ampFreq0.setBounds(w * (1 / 9.0f), sYg, sw, sh - 5);
+    ampFreq1.setBounds (w * (2 / 9.0f), sYg, sw, sh - 5);
+    ampFreq2.setBounds (w * (3 / 9.0f), sYg, sw, sh - 5);
+    ampFreq3.setBounds (w * (4 / 9.0f), sYg, sw, sh - 5);
     
     
     /*Master.setBounds(w * 0.0f / 9.0f, 15, w / 9.0f, h - 15);*/
     
     /*ampFreq0.setBounds(w * 1.0f / 9.0f, 15, w / 9.0f, h - 15);*/
     
-    Attack.setBounds(w * 5.0f / 9.0f, 15, w / 9.0f, h - 15);
-    Decay.setBounds(w * 6.0f / 9.0f, 15, w / 9.0f, h - 15);
-    Sustain.setBounds(w * 7.0f / 9.0f, 15, w / 9.0f, h - 15);
-    Release.setBounds(w * 8.0f / 9.0f, 15, w / 9.0f, h - 15);
+    Attack.setBounds(w * 5.0f / 9.0f, 30, w / 9.0f, h - 35);
+    Decay.setBounds(w * 6.0f / 9.0f, 30, w / 9.0f, h - 35);
+    Sustain.setBounds(w * 7.0f / 9.0f, 30, w / 9.0f, h - 35);
+    Release.setBounds(w * 8.0f / 9.0f, 30, w / 9.0f, h - 35);
     
 }
 
